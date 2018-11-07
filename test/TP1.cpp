@@ -38,7 +38,7 @@ int main(int argc, char const *argv[])
 
 	vecteur[0] = 1./sqrt(2.);
 	vecteur[1] = 1./sqrt(2.);
-	cout << "norm: " <<vecteur.norm ()<< " is_unit: " << vecteur.is_unit () << endl;
+	cout << "norm: " << vecteur.norm () << " is_unit: " << vecteur.is_unit () << endl;
 
 	vec [0] = 2;
 	vec [1] = 0;
@@ -60,9 +60,18 @@ int main(int argc, char const *argv[])
 
 	cout << "operator* (s*v): " << 2.5 * vecteur << endl;
 
-	//libmatrix::Vec2r vectr = ;
-
 	cout << "operator* (v*s): " << (vec1 * 2.6) << endl;
+	
+	libmatrix::Vec3i v1;
+	v1 [0] = 2;
+	v1 [1] = 3;
+	v1 [2] = -1;
+	libmatrix::Vec3r v2;
+	v2 [0] = 2.5;
+	v2 [1] = 3.1;
+	v2 [2] = 0;
+	cout << "operator* (v*v): " << (v2 * v1) << endl;
+	cout << "operator*= (v*=s): " << (v1 *= 2) << endl;
 
 	cout << "zerovec2i: " << vec + libmatrix::zerovec2i << endl;
 	cout << "zerovec3i: " << libmatrix::zerovec3i << endl;
@@ -86,7 +95,21 @@ int main(int argc, char const *argv[])
 
 	cout << matrix << endl;
 
-	cout << matrix.inverse () << endl;
+	cout << "inverse (): " << endl << matrix.inverse () << endl;
+
+	cout << "is_null (): " << matrix.is_null () << endl;
+
+	libmatrix::Mat33r mat;
+	mat [0][0] = 1;
+	mat [0][1] = 0;
+	mat [0][2] = 0;
+	mat [1][0] = 0;
+	mat [1][1] = 1;
+	mat [1][2] = 0;
+	mat [2][0] = 0;
+	mat [2][1] = 0;
+	mat [2][2] = -1;
+	cout << "is_ortho (): " << mat.is_ortho () << endl;
 
 	cout << "transpose (): " << endl << matrix.transpose () << endl;
 	
@@ -101,8 +124,57 @@ int main(int argc, char const *argv[])
 	matrix = matrix * 2;
 	cout << "operator* (m*s): " << endl << matrix << endl;
 
+	libmatrix::Mat33r mat1;
+	mat1 [0][0] = 1;
+	mat1 [0][1] = 2;
+	mat1 [0][2] = 3;
+	mat1 [1][0] = 2;
+	mat1 [1][1] = 3;
+	mat1 [1][2] = 1;
+	mat1 [2][0] = 3;
+	mat1 [2][1] = 1;
+	mat1 [2][2] = 2;
+
+	libmatrix::Mat33r mat2;
+	mat2 [0][0] = 1;
+	mat2 [0][1] = 2;
+	mat2 [0][2] = 3;
+	mat2 [1][0] = 2;
+	mat2 [1][1] = 3;
+	mat2 [1][2] = 1;
+	mat2 [2][0] = 3;
+	mat2 [2][1] = 1;
+	mat2 [2][2] = 2;
+
+	cout << "operator* (m*m): " << endl << mat1 * mat2 << endl;
+
+	libmatrix::Vec3r vect3;
+	vect3 [0] = 1;
+	vect3 [1] = -2;
+	vect3 [2] = 0.5;
+	libmatrix::Mat33r mat3;
+	mat3 [0][0] = 1;
+	mat3 [0][1] = 2;
+	mat3 [0][2] = 3;
+	mat3 [1][0] = 4;
+	mat3 [1][1] = 5;
+	mat3 [1][2] = 6;
+	mat3 [2][0] = 7;
+	mat3 [2][1] = 8;
+	mat3 [2][2] = 9;
+	cout << "operator* (v*m): " << vect3 * mat3 << endl;
+	cout << "operator* (m*v): " << mat3 * vect3 << endl;
+	cout << "operator*= (v*=m): " << (vect3 *= mat3) << endl;
+	cout << "operator*= (m*=s): " << endl << (mat3 *= 2.5) << endl;
+
+	mat1 *= mat2;
+	cout << "operator*= (m*=m): " << endl << mat1 << endl;
+
 	cout << "Identity33r: " << endl << libmatrix::Identity33r << endl;
 	cout << "Identity44r: " << endl << libmatrix::Identity44r << endl;
+
+	cout << "dot (): " << dot (vect3, libmatrix::Identity33r) << endl;
+	cout << "CROSS (): " << CROSS (vect3, v2) << endl;
 
 	return 0;
 }

@@ -113,6 +113,7 @@ template <typename T, int M, int N> T Matrix <T, M, N>::at (int i, int j) const 
 
 template <typename T, int M, int N> Matrix <T, M, N> Matrix <T, M, N>::inverse () const {
 	// Implémentation de l'élimination de Gauss-Jordan
+	Matrix <double, M, N> mi;
 	// 1 - M' = M|I:
 	double m1 [M][N*2];
 	for (int i = 0; i < M; i++)
@@ -121,7 +122,6 @@ template <typename T, int M, int N> Matrix <T, M, N> Matrix <T, M, N>::inverse (
 	for (int i = 0; i < M; i++)
 		for (int j = N; j < N*2; j++)
 			(N+i == j)? m1 [i][j] = 1 : m1 [i][j] = 0;
-
 	// 2:
 	double max_value;
 	int max_row;
@@ -137,7 +137,10 @@ template <typename T, int M, int N> Matrix <T, M, N> Matrix <T, M, N>::inverse (
 			}
 		// 2.2:
 		if ((float) (m1 [max_row][j]) == 0.f) {
-			std::cout << "non inversible!" << (float) m1 [max_row][j]  << " " << max_row << std::endl;
+			for (int i = 0; i < M; i++)
+				for (int j = 0; j < N; j++)
+					mi [i][j] = 0;
+			return mi;
 		}
 		// 2.3:
 		if (max_row != j) {
@@ -161,13 +164,31 @@ template <typename T, int M, int N> Matrix <T, M, N> Matrix <T, M, N>::inverse (
 			}
 	}
 	// 3 - Retourner la moitié droite de M':
-	Matrix <double, M, N> mi;
-	for (int i = 0; i < M; i++) {
-		for (int j = 0; j < N; j++) {
+	for (int i = 0; i < M; i++)
+		for (int j = 0; j < N; j++)
 			mi [i][j] = m1 [i][N+j];
-		}
-	}
 	return mi;
+}
+
+template <typename T, int M, int N> bool Matrix <T, M, N>::is_null () const {
+	for (int i = 0; i < M; i++)
+		for (int j = 0; j < N; j++)
+			if (std::isnan (raw [i][j]))
+				return true;
+
+	return false;
+}
+
+template <typename T, int M, int N> bool Matrix <T, M, N>::is_ortho () const {
+	Matrix <T, M, N> mi = inverse ();
+	Matrix <T, M, N> mt = transpose ();
+
+	for (int i = 0; i < M; i++)
+		for (int j = 0; j < N; j++)
+			if ((float) mi[i][j] != (float) mt [i][j])
+				return false;
+
+	return true;
 }
 
 template <typename T, int M, int N> Matrix <T, M, N> Matrix <T, M, N>::transpose () const {
@@ -196,6 +217,32 @@ template <typename T, int M, int N> Matrix <T, M, N> Matrix <T, M, N>::operator+
 	for (int i = 0; i < M; i++)
 		for (int j = 0; j < N; j++)
 			raw [i][j] = raw [i][j] + m2 [i][j];
+
+	return *this;
+}
+
+template <typename T, int M, int N> Matrix <T, M, N> Matrix <T, M, N>::operator* (Matrix <T, M, N> m2) const {
+	// Implémentation pour les matrices carrées (suffisant pour Mat33r et Mat44r).
+	// TODO: modifier si autres utilisations.
+	Matrix <double, M, N> mp;
+
+	for (int i = 0; i < M; i++)
+		for (int j = 0; j < N; j++)
+			mp [i][j] = 0;
+
+	for (int i = 0; i < M; i++)
+		for (int j = 0; j < N; j++)
+			for (int k = 0; k < M; k++)
+				mp [i][j] += raw [i][k]* m2 [k][j];
+
+	return mp;
+}
+
+template <typename T, int M, int N> Matrix <T, M, N>& Matrix <T, M, N>::operator*= (Matrix <T, M, N> m2) {
+	Matrix <T, M, N> mp = *this * m2;
+	for (int i = 0; i < M; i++)
+		for (int j = 0; j < N; j++)
+			raw [i][j] = mp [i][j];
 
 	return *this;
 }
