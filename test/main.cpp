@@ -64,20 +64,29 @@ int main(int argc, char const *argv[])
 
 	cout << "operator* (v*s): " << (vec1 * 2.6) << endl;
 
+	cout << "zerovec2i: " << vec + libmatrix::zerovec2i << endl;
+	cout << "zerovec3i: " << libmatrix::zerovec3i << endl;
+	cout << "zerovec4i: " << libmatrix::zerovec4i << endl;
+	cout << "zerovec2r: " << libmatrix::zerovec2r << endl;
+	cout << "zerovec3r: " << libmatrix::zerovec3r << endl;
+	cout << "zerovec4r: " << libmatrix::zerovec4r << endl;
+
 //-------------------------------------------------------------------------------------------
 
 	libmatrix::Mat33r matrix;
-	matrix [0][0] = 5;
-	matrix [0][1] = 2;
-	matrix [0][2] = 3;
+	matrix [0][0] = 2;
+	matrix [0][1] = 3;
+	matrix [0][2] = 8;
 	matrix [1][0] = 6;
-	matrix [1][1] = 8;
-	matrix [1][2] = 9;
-	matrix [2][0] = 1;
-	matrix [2][1] = 0;
-	matrix [2][2] = 7;
+	matrix [1][1] = 0;
+	matrix [1][2] = -3;
+	matrix [2][0] = -1;
+	matrix [2][1] = 3;
+	matrix [2][2] = 2;
 
 	cout << matrix << endl;
+
+	cout << matrix.inverse () << endl;
 
 	cout << "transpose (): " << endl << matrix.transpose () << endl;
 	
@@ -85,6 +94,15 @@ int main(int argc, char const *argv[])
 	
 	matrix += matrix.transpose ();
 	cout << "operator+= (): " << endl << matrix << endl;
+
+	matrix = 1.5 * matrix;
+	cout << "operator* (s*m): " << endl << matrix << endl;
+
+	matrix = matrix * 2;
+	cout << "operator* (m*s): " << endl << matrix << endl;
+
+	cout << "Identity33r: " << endl << libmatrix::Identity33r << endl;
+	cout << "Identity44r: " << endl << libmatrix::Identity44r << endl;
 
 	return 0;
 }
